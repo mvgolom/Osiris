@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+ <meta charset="utf-8">
+ <meta http-equiv="X-UA-Compatible" content="IE=edge">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <title>GitHub - Gormom</title>
+ <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+ <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+ <link rel="shortcut icon" href="{{ url_for('static', filename='database.ico') }}">
+ <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+ <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+</head>
+<body >
+    <!-- Modal -->
+    <div id="edit-modal" class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="form_editconfigs" action="/configs/edit" method="POST">
+                <div class="modal-body form-inline">
+                        <input name="configname" id="configname" value="" class="configname form-control" type="hidden">
+                        <input name="configValue" id="configValue" value="" class="configvalue form-control" type="hidden">
+                        <label class="newconfigLabel" for="newconfigValue"></label>
+                        <input name="newconfigValue" id="newconfigValue" value="" class="newconfigValue form-control" style="text-align: center; margin-left: 10px;width: auto;" type="text" data-match-error="Campo Vazio" required>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-success">Save</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+    <!-- end modal -->
+    <nav class="navbar navbar-dark bg-dark">
+        <a class="navbar-brand" href="/">GitHub -</a>
+        <div class="nav justify-content-end" id="navbarText">
+            <ul class="nav justify-content-end ">
+                <li class="nav-item"><a class="nav-link" id="navNotActive" href="/projects">Projects</a></li>
+                <li class="nav-item"><a class="nav-link" id="navNotActive" href="/keys">Keys</a></li>
+                <li class="nav-item"><a class="nav-link status" id="navStatus" style="">Status: </a></li>
+            </ul>
+        </div>
+    </nav>
+    <div id="main" class="container-fluid">
+        <div id="board" class="container-fluid row">
+                <div id="fold" class="col-md-3">
+                </div>
+                <div id="center" class="col-md-6">
+                        <h1 id="titleHeader">Projects <span class="badge badge-light" style="margin-left: 3px">{{content|length}}</span></h1>
+                        <ul id="boardListconfigs" class="list-group">
+                            <li class="list-group-item d-flex justify-content-between align-items-center"> 
+                                <h6>Threads quantity : <b>{{content.treads_useds}}</b></h6>
+                                <div>
+                                    <a href="#" class="edit-config badge badge-success" data-oldvalue="{{content.treads_useds}}" data-name="Threads quantity: " data-id="treads_useds" data-value="{{content.treads_useds}}" data-toggle="modal">Edit</a>
+                                </div>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center"> 
+                                <h6>Mongodb URL : <b>{{content.bd_url}}</b></h6>
+                                <div>
+                                    <a href="#" class="edit-config badge badge-success" data-oldvalue="{{content.bd_url}}" data-name="Mongodb URL :" data-id="bd_url" data-value="{{content.bd_url}}" data-toggle="modal">Edit</a>
+                                </div>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center"> 
+                                <h6>Mongodb Port : <b>{{content.bd_port}}</b></h6>
+                                <div>
+                                    <a href="#" class="edit-config badge badge-success" data-oldvalue="{{content.bd_port}}" data-name="Mongodb Port :" data-id="bd_port" data-value="{{content.bd_port}}" data-toggle="modal">Edit</a>
+                                </div>
+                            </li>
+                        </ul>
+                </div>
+                <div id="fold" class="col-md-3">
+                </div>             
+
+            </div> <!-- /#list -->
+        
+             <div id="bottom" class="row">
+                <div class="col-md-12">             
+                </div>
+            </div> <!-- /#bottom -->
+        </div>  <!-- /#main -->
+    </div>
+
+
+    <script>
+        // Add the following code if you want the name of the file appear on select
+        $(".custom-file-input").on("change", function() {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
+    <script>
+        $('#form_addkeyjson').validate({
+            lang: 'en', // or whatever language option you have.
+        });
+    </script>    
+    <script>
+        $(document).ready(function () {
+            $('.edit-config').click(function (event) {
+                event.preventDefault();
+                var name = $(this).attr('data-name');
+                $('#configname').attr('value', $(this).attr('data-id'));
+                $('#configvalue').attr('value', $(this).attr('data-oldvalue'));
+                $('.modal-body label').text(name)
+                $('#newconfigValue').attr('value', $(this).attr('data-value'));
+                $('#edit-modal').modal('show');
+            });
+        });
+    </script>
+    <script>
+            function statusCrawler() {
+                $.ajax({
+                    url: '/status/crawler',
+                    dataType: 'json',
+                    success: function(response) {
+                        if(response.status == "OFF"){
+                            console.log(response.status)
+                            $('.status').attr('style', 'color: #ff111d');
+                            $('.status').text('Status: '+response.status)
+                        }
+                        else{
+                            console.log(response.status)
+                            $('.status').attr('style', 'color: #1CE739');
+                            $('.status').text('Status: '+response.status)
+                        }
+                    }
+                });
+            }
+        </script>
+        <script>
+            $(document).ready(function(){
+                setInterval(function(){
+                    statusCrawler();
+                }, 60000);
+            });
+        </script>
+        <script type="text/javascript">
+            $(window).on('load',function(){
+                statusCrawler();
+            });
+        </script>
+
+</body>
+</html>

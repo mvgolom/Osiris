@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+ <meta charset="utf-8">
+ <meta http-equiv="X-UA-Compatible" content="IE=edge">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <title>GitHub - Gormom</title>
+ <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+ <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+ <link rel="shortcut icon" href="{{ url_for('static', filename='database.ico') }}">
+ <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+ <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+</head>
+<body id="corpo">
+    {%if content.duplicate|length > 0%}
+        <script type="text/javascript">
+            $(window).on('load',function(){
+                $('#duplicate-modal').modal('show');
+            });
+        </script>
+    {%endif%}
+    <!-- Modal -->
+    <!-- delete -->
+    <div id="delete-modal" class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="form_editproject" action="/keys/del" method="POST">
+                <div class="modal-body">
+                    <input name="client_id" id="client_id" value="" class="form-control" type="hidden">
+                    <p style="text-align: center"><b></b></p>
+                    <p>Are you sure you want delete this project from list?</p>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-danger">Delete</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+    <!-- duplicate-->
+    <div id="duplicate-modal" class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h1 id="titleHeader">Duplicates <span class="badge badge-light" style="margin-left: 3px">{{content.duplicate|length}}</span></h1>
+                <ul id="boardListModal" class="list-group">
+                    {% for item in content.duplicate %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{item.name}}
+                            </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Ok</button>
+            </div>
+            </div>
+        </div>
+    </div>
+    <!-- edit -->
+    <div id="edit-modal" class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="form_editproject" action="/keys/edit" method="POST">
+                <div class="modal-body">
+                        <input name="client_id" id="client_id" value="" class="form-control client_id" type="hidden">
+                        <input name="client_secret" id="client_secret" value="" class="form-control client_secret" type="hidden">
+                        <input name="newClient_id" id="newClient_id" value="" class="form-control newClient_id" style="text-align: center; margin-bottom: 10px;" type="text" data-match-error="Campo Vazio" required>
+                        <input name="newClient_secret" id="newClient_secret" value="" class="form-control newClient_secret" style="text-align: center; margin-bottom: 10px;" type="text" data-match-error="Campo Vazio" required>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-success">Save</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+    <nav class="navbar navbar-dark bg-dark">
+        <a class="navbar-brand" href="/">GitHub -</a>
+        <div class="nav justify-content-end" id="navbarText">
+            <ul class="nav justify-content-end ">
+                <li class="nav-item"><a class="nav-link" id="navNotActive" href="/projects">Projects</a></li>
+                <li class="nav-item"><a class="nav-link" id="navActive">Keys</a></li>
+                <li class="nav-item"><a class="nav-link status" id="navStatus" style="">Status: </a></li>
+            </ul>
+        </div>
+    </nav>
+    <div id="main" class="container-fluid">
+            <div id="board" class="container-fluid row">
+                <div id="right" class="col-md-6">
+                        <h1 id="titleHeader">Keys<span class="badge badge-light" style="margin-left: 3px">{{content.clients|length}}</span></h1>
+                        <ul id="boardListkey" class="list-group">
+                                {% if (content.clients is not defined) or (content.clients|length == 0)%}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    No Projects Found
+                                </li>
+                            {% else %}
+                                {% for item in content.clients %}
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            client_id: {{item.client_id}} <br />
+                                            client_secret: {{item.client_secret}}
+                                            <div>
+                                                <a href="#" class="delete-project badge badge-danger" data-id="{{item.client_id}}" data-secret="{{item.client_secret}}" data-toggle="modal">Delete</a>
+                                                <a href="#" class="edit-project badge badge-success" data-id="{{item.client_id}}" data-secret="{{item.client_secret}}" data-toggle="modal">Edit</a>
+                                            </div>
+                                        </li>
+                                {% endfor %}
+                            {% endif %}
+                        </ul>
+                </div>
+                <div id="fold" class="col-md-1">
+                </div>             
+                <div id="left" class="col-md-5">
+                    <div id="add-key">
+                        <form id="form_addkey" action="/keys/add" method="POST">
+                            <h2 id="titleHeader">Add Key</h2>
+                            <div id="inputs" style="margin-left: 20px">
+                                <div class="input-group input-group-sm" style="width:75%;">
+                                    <label for="formControlRange" style="margin-right: 2px">client_id:</label>
+                                    <input id="client_id" name="client_id" type="text" class="form-control" style="text-align: center" placeholder="id" type="text" data-match-error="Campo Vazio" required>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                                
+                                <div class="input-group input-group-sm" style="width:75%;margin-top: 2px;">
+                                    <label for="formControlRange" style="margin-right: 2px">client_secret:</label>
+                                    <input id="client_secret" name="client_secret" type="text" class="form-control" style="text-align: center" placeholder="secret" type="text" data-match-error="Campo Vazio" required>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                            <div id="buttonGroup" >
+                                <button type="submit" id="add-button" class="btn btn-primary btn-sm float-right" href="#" role="button">ADD</a>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="loadfile">
+                        <form id="form_addkeyjson" action={{ url_for('keysJson' )}}  enctype='multipart/form-data' method="POST">
+                            <h2 id="titleHeader">Add Key Json</h2>
+                            <div id="loadFile" class="input-group" style="width: 85%">
+                                    <div class="custom-file">
+                                        <input name="file" id="file" type="file" class="custom-file-input" id="customFile" required>
+                                        <label class="custom-file-label" for="customFile">Choose file</label>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                            </div>
+                            <div id="buttonGroup" >
+                                <button type="submit" id="load-button" class="btn btn-primary btn-sm float-right" href="#" role="button">Load</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div> <!-- /#list -->
+        
+             <div id="bottom" class="row">
+                <div class="col-md-12">             
+                </div>
+            </div> <!-- /#bottom -->
+    </div>
+
+
+
+    <script>
+        // Add the following code if you want the name of the file appear on select
+        $(".custom-file-input").on("change", function() {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
+    <script>
+        $('#form_addkeyjson').validate({
+            lang: 'en', // or whatever language option you have.
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('.edit-project').click(function (event) {
+                event.preventDefault();
+                $('#client_id').attr('value', $(this).attr('data-id'));
+                $('#client_secret').attr('value', $(this).attr('data-secret'));
+                $('#newClient_id').attr('value', $(this).attr('data-id'));
+                $('#newClient_secret').attr('value', $(this).attr('data-secret'));
+                $('#edit-modal').modal('show');
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('.delete-project').click(function (event) {
+                event.preventDefault();
+                var name = $(this).attr('data-id')
+                $('.modal-body input').attr('value', $(this).attr('data-id'));
+                $('.modal-body b').text(name)
+                $('#delete-modal').modal('show');
+            });
+        });
+    </script>
+    <script>
+        function statusCrawler() {
+            $.ajax({
+                url: '/status/crawler',
+                dataType: 'json',
+                success: function(response) {
+                    if(response.status == "OFF"){
+                        console.log(response.status)
+                        $('.status').attr('style', 'color: #ff111d');
+                        $('.status').text('Status: '+response.status)
+                    }
+                    else{
+                        console.log(response.status)
+                        $('.status').attr('style', 'color: #1CE739');
+                        $('.status').text('Status: '+response.status)
+                    }
+                }
+            });
+        }
+    </script>
+    <script>
+        $(document).ready(function(){
+            setInterval(function(){
+                statusCrawler();
+            }, 60000);
+        });
+    </script>
+    <script type="text/javascript">
+        $(window).on('load',function(){
+            statusCrawler();
+        });
+    </script>
+</body>
+</html>

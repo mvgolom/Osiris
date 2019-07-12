@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>GitHub - Gormom</title>
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='database.ico') }}">
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+</head>
+
+<body id="corpo">
+    <!-- Modal -->
+    <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="modalLabel">Excluir Item</h4>
+                </div>
+                <div class="modal-body">Deseja realmente excluir este item? </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Sim</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">N&atilde;o</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav class="navbar navbar-dark bg-dark">
+            <a class="navbar-brand" href="/">GitHub -</a>
+            <div class="nav justify-content-end" id="navbarText">
+                <ul class="nav justify-content-end ">
+                    <li class="nav-item"><a class="nav-link" id="navNotActive" href="/projects">Projects</a></li>
+                    <li class="nav-item"><a class="nav-link" id="navNotActive" href="#">Keys</a></li>
+                    <li class="nav-item"><a class="nav-link status" id="navStatus" style="">Status: </a></li>
+                </ul>
+            </div>
+        </nav>
+    <div id="main" class="container-fluid">
+        <div id="main" class="container-fluid">
+            <div id="top" class="row">
+                <div class="col-md-2">
+                </div>
+
+                <div class="col-md-8">
+
+                </div>
+
+                <div class="col-md-2">
+                </div>
+
+            </div> <!-- /#top -->
+
+            {{ text|markdown }}
+
+            <div id="bottom" class="row">
+                <div class="col-md-12">
+                </div>
+            </div> <!-- /#bottom -->
+        </div> <!-- /#main -->
+    </div>
+
+
+    <script>
+            function statusCrawler() {
+                $.ajax({
+                    url: '/status/crawler',
+                    dataType: 'json',
+                    success: function(response) {
+                        if(response.status == "OFF"){
+                            console.log(response.status)
+                            $('.status').attr('style', 'color: #ff111d');
+                            $('.status').text('Status: '+response.status)
+                        }
+                        else{
+                            console.log(response.status)
+                            $('.status').attr('style', 'color: #1CE739');
+                            $('.status').text('Status: '+response.status)
+                        }
+                    }
+                });
+            }
+        </script>
+        <script>
+            $(document).ready(function(){
+                setInterval(function(){
+                    statusCrawler();
+                }, 60000);
+            });
+        </script>
+        <script type="text/javascript">
+            $(window).on('load',function(){
+                statusCrawler();
+            });
+        </script>
+</body>
+</html>
