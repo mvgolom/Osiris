@@ -110,3 +110,50 @@ to extract all repositories metrics of database each to .csv file in ./results i
 *now*
 **owner#repo**
 ##  JSON Valid Format
+### projects.json
+The field visited is True only if the project is completed 
+Example json for **one** project
+~~~sh
+{
+	"visited":false,
+	"name":"owner/repo"
+}
+~~~
+Example json for **many** project
+~~~sh
+[
+	{"visited":false,"name":"owner/repo"},
+	{"visited":false,"name":"owner/repo"},
+	{"visited":false,"name":"owner/repo"},
+	{"visited":false,"name":"owner/repo"}
+]
+~~~
+### keys.json (GitHub api key)
+Example json for **one** project
+~~~sh
+{
+	"client_id":"xxxxxxxxxxxxxxxxxxx",
+	"client_secret":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+}
+~~~
+Example json for **many** project
+~~~sh
+[
+	{
+		"client_id":"xxxxxxxxxxxxxxxxxxx",
+		"client_secret":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+	},
+	{
+		"client_id":"xxxxxxxxxxxxxxxxxxx",
+		"client_secret":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+	},
+	{
+		"client_id":"xxxxxxxxxxxxxxxxxxx",
+		"client_secret":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+	},
+	{
+		"client_id":"xxxxxxxxxxxxxxxxxxx",
+		"client_secret":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+	}
+]
+~~~
