@@ -1,6 +1,6 @@
+![](https://img.shields.io/github/license/mvgolom/Osiris.svg)
 
-
-# Name
+# Osiris
 
 ## Requirements 
 * [Python >= 3.6](https://www.python.org/downloads/)
