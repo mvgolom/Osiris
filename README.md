@@ -14,7 +14,7 @@ virtualenv -p python3 venv
 -p #Set the python version virtualenv need to use
 ~~~
 ~~~python
-venv #Name to a new virtual  environment
+venv #The name of virtual  environment
 ~~~
 
 ### Install Python Requirements
